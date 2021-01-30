@@ -30,7 +30,7 @@ census_dat <- read_rds("replication_raw.rds")
 census <- census_dat %>%
   rename(age_cat = Q2,
          female = Q4,
-         religion = Q68,
+         respondent_religion = Q68,
          income = Q69,
          treatment = FL_120_DO,
          respondent_race = Q3,
