@@ -1,0 +1,203 @@
+---
+title: "Analyses Figures"
+author: "AS d'Urso"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T)
+knitr::opts_chunk$set(message = F)
+knitr::opts_chunk$set(warning = F)
+```
+
+# Set up
+
+## Load Libraries
+
+```{r}
+#load libraries 
+library(knitr)
+library(stargazer)
+library(tidyverse)
+```
+
+## Load Data 
+
+```{r}
+census <- read_rds("Data/replication_cleaned.rds")
+```
+
+## Useful Function 
+
+```{r}
+wrapper <- function(x, ...) 
+{
+  paste(strwrap(x, ...), collapse = "\n")
+}
+```
+
+# Analyses 
+
+## Who is white?
+
+### H1: Country of Origin
+```{r assign_white ~ country}
+census %>% 
+  group_by(country) %>% 
+  summarize(avg_white = mean(assign_white), 
+            dev_white = sd(assign_white, na.rm = T), 
+            n = n()) %>% 
+  mutate(mi = 1.96 * (dev_white/sqrt(n)),
+         plus = avg_white + mi,
+         minus = avg_white - mi) %>%
+  ggplot(aes(x = country, y = avg_white)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = minus, ymax = plus), width = .1) + 
+  theme_bw() +
+  xlab("Country of Origin") +
+  ylab("Percent Assigned White") +
+  labs(caption = "95% confidence intervals \n White respondents") +
+  ggtitle(label = wrapper("The Effect of Country of Origin on White Assignment", width = 80)) +
+  ggsave("Figures/H1_avgwhite.png") 
+```
+
+
+### H2: Religion 
+```{r assign_white ~ religion}
+census %>% 
+  group_by(religion) %>% 
+  summarize(avg_white = mean(assign_white), 
+            dev_white = sd(assign_white, na.rm = T), 
+            n = n()) %>% 
+  mutate(mi = 1.96 * (dev_white/sqrt(n)),
+         plus = avg_white + mi,
+         minus = avg_white - mi) %>%
+  ggplot(aes(x = religion, y = avg_white)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = minus, ymax = plus), width = .1) + 
+  theme_bw() +
+  xlab("Religion") +
+  ylab("Percent Assigned White") +
+  labs(caption = "95% confidence intervals \n White respondents") +
+  ggtitle(label = wrapper("The Effect of Religion on White Assignment", width = 80)) +
+  ggsave(filename = "Figures/H2_avgwhite.png")
+```
+
+### H3: Country of Origin and Religion
+```{r white ~ country + religion}
+census %>% 
+  filter(respondent_race == "White") %>% 
+  group_by(country, religion) %>% 
+  summarize(avg_white = mean(assign_white), 
+            dev_white = sd(assign_white, na.rm = T), 
+            n = n()) %>% 
+  mutate(mi = 1.96 * (dev_white/sqrt(n)),
+         plus = avg_white + mi,
+         minus = avg_white - mi) %>%
+  ggplot(aes(x = country, y = avg_white, shape = religion, color = religion)) +
+  geom_point(position = position_dodge(0.1)) + 
+  geom_errorbar(aes(ymin = minus, ymax = plus), width = .1, position = position_dodge(0.1)) + 
+ scale_shape_manual(
+    name = "Religion",
+    values = c(15, 17),
+    labels = c("Christian", "Muslim")
+  ) +
+  scale_color_manual(
+    name = "Religion",
+    values = c("orangered1", "seagreen3"),
+    labels = c("Christian", "Muslim")
+  ) +  
+  theme_bw() +
+  theme(legend.justification = c(1, 0),
+        legend.position = c(1, 0)) +
+  xlab("Country of Origin") +
+  ylab("Percent Assigned White") +
+  labs(caption = "95% confidence intervals \n White respondents") +
+  ggtitle(label = wrapper("The Interaction of Country of Origin and Religion on White Assignment", width = 70)) +
+  ggsave("Figures/H3_avgwhite.png")
+```
+
+## Who is Darker?
+
+### H4.1: Country of Origin 
+```{r pigment ~ country}
+census %>% 
+  group_by(country) %>% 
+  summarize(avg_pigment = mean(assign_pigment, na.rm = T), 
+            dev_pigment = sd(assign_pigment, na.rm = T), 
+            n = n()) %>% 
+  mutate(mi = 1.96 * (dev_pigment/sqrt(n)),
+         plus = avg_pigment + mi,
+         minus = avg_pigment - mi) %>%
+  ggplot(aes(x = country, y = avg_pigment)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = minus, ymax = plus), width = .1) + 
+  theme_bw() +
+  ggtitle(label = wrapper("The Effect of Country of Origin on Percieved Skin Pigmentation", width = 70)) +
+  ylab("Skin Pigmentation \n (Higher Values = Darker)") +
+  xlab("Country of Origin") +
+  labs(caption = "95% confidence intervals \n White respondents") +
+  ggsave("Figures/H4_H1.png")
+
+```
+
+### H4.2: Religion 
+
+```{r pigment ~ religion}
+census %>% 
+  group_by(religion) %>% 
+  summarize(avg_pigment = mean(assign_pigment, na.rm = T), 
+            dev_pigment = sd(assign_pigment, na.rm = T), 
+            n = n()) %>% 
+  mutate(mi = 1.96 * (dev_pigment/sqrt(n)),
+         plus = avg_pigment + mi,
+         minus = avg_pigment - mi) %>%
+  ggplot(aes(x = religion, y = avg_pigment)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = minus, ymax = plus), width = .1) + 
+  theme_bw() +
+  ggtitle(label = wrapper("The Effect of Religion on Percieved Skin Pigmentation", width = 70)) +
+  ylab("Skin Pigmentation \n (Higher Values = Darker)") +
+  xlab("Religion") +
+  labs(caption = "95% confidence intervals \n White respondents") +
+  ggsave("Figures/H4_H2.png")
+
+```
+
+### H4.3: Country of Origin and Religion 
+
+```{r pigment ~ country + religion}
+census %>% 
+  group_by(country, religion) %>% 
+  summarize(avg_pigment = mean(assign_pigment, na.rm = T), 
+            dev_pigment = sd(assign_pigment, na.rm = T), 
+            n = n()) %>% 
+  mutate(mi = 1.96 * (dev_pigment/sqrt(n)),
+         plus = avg_pigment + mi,
+         minus = avg_pigment - mi) %>%
+  ggplot(aes(x = country, y = avg_pigment, color = religion, shape = religion)) +
+  geom_point(position = position_dodge(0.1)) + 
+  geom_errorbar(aes(ymin = minus, ymax = plus), width = .1, position = position_dodge(0.1)) + 
+   scale_shape_manual(
+    name = "Religion",
+    values = c(15, 17),
+    labels = c("Christian", "Muslim")
+  ) +
+  scale_fill_manual(
+    name = "Religion",
+    values = c("orangered1", "seagreen3"),
+    labels = c("Christian", "Muslim")
+  ) +
+  scale_color_manual(
+    name = "Religion",
+    values = c("orangered1", "seagreen3"),
+    labels = c("Christian", "Muslim")
+  ) +  
+  theme_bw() +
+  theme(legend.justification = c(1, 0),
+    legend.position = c(1, 0)) +
+  ylab("Skin Pigmentation \n (Higher Values = Darker)") +
+  ggtitle(label = wrapper("The Effect of Country of Origin and Religion on Percieved Skin Pigmentation", width = 70)) +
+  ggsave("Figures/H4_H3.png")
+
+```
