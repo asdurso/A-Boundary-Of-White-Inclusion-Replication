@@ -1,0 +1,145 @@
+---
+title: "Demographics"
+author: "AS d'Urso"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+knitr::opts_chunk$set(message = F)
+knitr::opts_chunk$set(warning = F)
+```
+
+## Overview
+
+This document provides replication code for demographics. 
+
+
+### Load Libraries Used
+```{r}
+#load libraries 
+library(knitr)
+library(stargazer)
+library(tidyverse)
+```
+
+### Load Data 
+
+```{r}
+#load data 
+census <- read_rds("Data/replication_cleaned.rds")
+
+cces_dat <- haven::read_dta("Data/CCES19_Common_OUTPUT.dta") #for partisanship comparison
+```
+
+## Respondent Demographics 
+
+```{r}
+census %>% 
+  select(respondent_race) %>% 
+  table() %>% as.tibble() %>% rename(`Race/Ethnicity` = ".") %>% kable() 
+```
+
+```{r}
+census %>% 
+  select(age_cat) %>% 
+  table() %>% prop.table() %>% 
+  as.tibble() %>% rename(Age = ".") %>% kable() 
+```
+
+```{r}
+census %>% 
+  select(female) %>% 
+  table() %>% 
+  prop.table() %>% as.tibble() %>% rename(Gender = ".") %>% kable(digits = 3) 
+```
+
+```{r}
+census %>% 
+  select(respondent_religion) %>% 
+  table() %>% prop.table() %>% 
+  as.tibble() %>% rename(Religion = ".", Proportion = n) %>% kable(digits = 3) 
+```
+
+```{r}
+census %>% 
+  select(income) %>% 
+  table() %>% 
+  prop.table() %>% 
+  as.tibble() %>% rename(Income = ".", Proportion = n) %>% kable(digits = 4) 
+
+
+
+```
+
+```{r}
+census %>% 
+  select(education) %>% 
+  table() %>% 
+  prop.table() %>% 
+  as.tibble() %>% 
+  rename(Education = ".", Proportion = n) %>%
+  kable(digits = 3) 
+```
+
+```{r}
+cces_pid7 <- cces_dat %>% 
+  filter(pid7 != 8 & race == 1) %>% 
+  select(pid7) %>% 
+  mutate(pid7 = case_when(pid7 == 1 ~ "Strong Democrat", 
+                          pid7 == 2 ~ "Weak Democrat",
+                          pid7 == 3 ~ "Leaning Democrat", 
+                          pid7 == 4 ~ "Independent",
+                          pid7 == 5 ~ "Leaning Republican",
+                          pid7 == 6 ~ "Weak Republican",
+                          pid7 == 7 ~ "Strong Republican") %>%  
+           as.factor() %>% factor(levels = c("Strong Democrat", "Weak Democrat", "Leaning Democrat", "Independent", "Leaning Republican", "Weak Republican", "Strong Republican"))) %>% 
+  select(pid7) %>% 
+  table() %>% 
+  prop.table() %>% 
+  as.tibble() %>% 
+  rename(`Party ID` = ".", `(CCES)` = n) 
+```
+
+```{r}
+census %>% 
+  select(pid7) %>% 
+  table() %>% 
+  prop.table() %>% 
+  as.tibble() %>% 
+  rename(`Party ID` = ".", Proportion = n) %>%
+  left_join(cces_pid7) %>% 
+  kable(digits = 3)  
+ 
+```
+
+
+```{r}
+cces_pid3 <- cces_dat %>% 
+    filter(pid3 <= 3 & race == 1) %>% 
+  select(pid3) %>% 
+  mutate(pid3 = case_when(pid3 == 1 ~ "Democrat", 
+                          pid3 == 2 ~ "Republican",
+                          pid3 == 3 ~ "Independent") %>% 
+           as.factor() %>% factor(levels = c("Democrat", "Independent", "Republican"))) %>% 
+  table() %>% 
+  prop.table() %>% 
+  as.tibble() %>% 
+  rename(`Party ID` = ".", `(CCES)` = n) 
+```
+
+```{r}
+census %>% 
+  mutate(PID = gsub("Leaning Democratic", "Leaning Democrat", Q71) %>% as.factor() %>% factor(levels = c("Strong Democrat", "Weak Democrat", "Leaning Democrat", "Independent", "Leaning Republican", "Weak Republican", "Strong Republican")), 
+         pid3 = case_when(PID == "Leaning Democrat" | PID == "Weak Democrat" | PID == "Strong Democrat" ~ "Democrat", 
+                          PID == "Leading Republican" | PID == "Weak Republican" | PID == "Strong Republican" ~ "Republican", 
+         T ~ "Independent")) %>% 
+  select(pid3) %>% 
+  table() %>% 
+  prop.table() %>% 
+  as.tibble() %>% 
+  rename(`Party ID` = ".", Proportion = n) %>%
+  left_join(cces_pid3) %>% 
+  kable(digits = 3)  
+ 
+```

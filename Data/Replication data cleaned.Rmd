@@ -1,0 +1,53 @@
+---
+title: "Replication Data Cleaned"
+author: "AS d'Urso"
+date: "1/30/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+knitr::opts_chunk$set(message = F)
+knitr::opts_chunk$set(warning = F)
+```
+
+# About 
+
+## Setup 
+
+```{r}
+#load libraries 
+library(tidyverse)
+```
+
+```{r}
+#load data 
+census_dat <- read_rds("replication_raw.rds")
+```
+
+```{r}
+#clean data 
+census <- census_dat %>%
+  rename(age_cat = Q2,
+         female = Q4,
+         religion = Q68,
+         income = Q69,
+         treatment = FL_120_DO,
+         respondent_race = Q3,
+         assign_race = Q52,
+         assign_pigment = Q53_1, 
+         assign_party = Q54) %>%
+  mutate(education = Q70 %>% 
+                  factor(levels = c("Less than high school", "High school", "Some college", "College degree", "Post graduate degree")),
+         pid7 = gsub("Leaning Democratic", "Leaning Democrat", Q71) %>% as.factor() %>% factor(levels = c("Strong Democrat", "Weak Democrat", "Leaning Democrat", "Independent", "Leaning Republican", "Weak Republican", "Strong Republican")), 
+         treatment = gsub("([[:lower:]])([[:upper:]])", "\\1 \\2", treatment),
+         treatment = treatment %>%  as.factor() %>% 
+           factor(c("Russian Christian", "Russian Muslim", "Iranian Christian", "Iranian Muslim")),
+         assign_white = case_when(assign_race == "White" ~ 1, 
+                                  TRUE ~ 0)) %>% 
+  separate(treatment, c("country", "religion"), remove = F) %>% 
+  mutate(country = as.factor(country) %>% factor(levels = c("Russian", "Iranian")),
+         religion = as.factor(religion) %>% factor(levels = c("Christian", "Muslim"))) #%>% 
+  #write_rds("replication_cleaned.rds")
+```
+
