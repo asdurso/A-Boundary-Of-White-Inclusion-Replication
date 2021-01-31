@@ -1,0 +1,112 @@
+---
+title: "Difference in Means"
+author: "AS d'Urso"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T)
+knitr::opts_chunk$set(message = F)
+knitr::opts_chunk$set(warning = F)
+```
+
+# Set up 
+
+## Load Libraries
+```{r load libraries}
+library(tidyverse)
+```
+
+## Load Data 
+
+```{r load data}
+census <- read_rds("Data/replication_cleaned.rds")
+```
+
+# Analyses 
+
+## Who is White?
+
+### H1: Country of origin
+```{r h1}
+h1 <- census %>%  
+  spread(key = country, value = assign_white)
+
+t.test(h1$Russian, h1$Iranian)
+```
+
+### H2: Religion
+```{r h2}
+h2 <- census %>%  
+  spread(key = religion, value = assign_white)
+
+t.test(h2$Christian, h2$Muslim)
+```
+
+### H3: Country of Origin and Religion 
+```{r h3}
+h3 <- census %>%  
+  spread(key = treatment, value = assign_white)
+
+## ss difference
+t.test(h3$`Russian Christian`, h3$`Russian Muslim`)  
+
+## ss difference
+t.test(h3$`Russian Christian`, h3$`Iranian Christian`) 
+
+## ss difference
+t.test(h3$`Russian Christian`, h3$`Iranian Muslim`)  
+
+## not a ss difference
+t.test(h3$`Russian Muslim`, h3$`Iranian Christian`)  
+
+## ss difference
+t.test(h3$`Russian Muslim`, h3$`Iranian Muslim`)
+
+## ss difference
+t.test(h3$`Iranian Christian`, h3$`Iranian Muslim`)
+
+## Who is Daker?
+
+### H4.1: Country of Origin
+
+```{r h4_h1}
+h4_h1 <- census %>%  
+  spread(key = country, value = assign_pigment)
+
+t.test(h4_h1$Russian, h4_h1$Iranian)
+```
+
+### H4.2: Religion 
+
+```{r h4_h2}
+h4_h2 <- census %>%  
+  spread(key = religion, value = assign_pigment)
+
+t.test(h4_h2$Christian, h4_h2$Muslim)
+```
+
+### H4.3: Country of Origin and Religion
+
+```{r h4_h3}
+h4_h3 <- census %>% 
+  spread(key = treatment, value = assign_pigment)
+
+## not a ss difference
+t.test(h4_h3$`Russian Christian`, h4_h3$`Russian Muslim`)  
+
+## not a ss difference
+t.test(h4_h3$`Russian Christian`, h4_h3$`Iranian Christian`) 
+
+## ss difference
+t.test(h4_h3$`Russian Christian`, h4_h3$`Iranian Muslim`)  
+
+## not a ss difference
+t.test(h4_h3$`Russian Muslim`, h4_h3$`Iranian Christian`)  
+
+## ss difference
+t.test(h4_h3$`Russian Muslim`, h4_h3$`Iranian Muslim`)
+
+## ss difference
+t.test(h4_h3$`Iranian Christian`, h4_h3$`Iranian Muslim`)
+```
