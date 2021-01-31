@@ -56,7 +56,7 @@ census %>%
   ylab("Percent Assigned White") +
   labs(caption = "95% confidence intervals \n White respondents") +
   ggtitle(label = wrapper("The Effect of Country of Origin on White Assignment", width = 80)) +
-  ggsave("Figures/H1_avgwhite.png") 
+  ggsave("Figures/H1.png") 
 ```
 
 
@@ -78,7 +78,7 @@ census %>%
   ylab("Percent Assigned White") +
   labs(caption = "95% confidence intervals \n White respondents") +
   ggtitle(label = wrapper("The Effect of Religion on White Assignment", width = 80)) +
-  ggsave(filename = "Figures/H2_avgwhite.png")
+  ggsave(filename = "Figures/H2.png")
 ```
 
 ### H3: Country of Origin and Religion
@@ -112,7 +112,7 @@ census %>%
   ylab("Percent Assigned White") +
   labs(caption = "95% confidence intervals \n White respondents") +
   ggtitle(label = wrapper("The Interaction of Country of Origin and Religion on White Assignment", width = 70)) +
-  ggsave("Figures/H3_avgwhite.png")
+  ggsave("Figures/H3.png")
 ```
 
 ## Who is Darker?
