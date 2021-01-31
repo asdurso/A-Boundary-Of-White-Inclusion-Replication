@@ -1,0 +1,78 @@
+---
+title: "Analyses LM Tables"
+author: "AS d'Urso"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T)
+knitr::opts_chunk$set(message = F)
+knitr::opts_chunk$set(warning = F)
+```
+
+# Set up
+
+## Load Libraries
+
+```{r}
+#load libraries 
+library(knitr)
+library(stargazer)
+library(tidyverse)
+```
+
+## Load Data 
+
+```{r}
+census <- read_rds("Data/replication_cleaned.rds")
+```
+
+# Analyses 
+
+## Who is white?
+
+### H1: Country of Origin
+```{r lm white ~ country , results = 'asis'}
+census %>% 
+  lm(formula = assign_white ~ country) %>%
+  stargazer(type = "html", out = "Tables/H1.doc") 
+```
+
+### H2: Religion 
+
+```{r lm white ~ religion, results = 'asis'}
+census %>% 
+  lm(formula = assign_white ~ religion) %>%
+  stargazer(type = "html", out = "Tables/H2.doc") 
+```
+### H3: Country of Origin and Religion 
+
+```{r lm white ~ treatment, results = 'asis'}
+census %>% 
+  lm(formula = assign_white ~ treatment) %>%
+  stargazer(type = "html", out = "Tables/H3.doc")
+```
+
+## Who is Darker?
+
+### H4.1: Country of Origin 
+
+```{r lm pigment ~ country, results = 'asis'}
+census %>% 
+  lm(formula = assign_pigment ~ country) %>% 
+  stargazer(type = "html", out = "Tables/H4_H1.doc")
+```
+### H4.2: Religion
+```{r lm pigment ~ religion, results = 'asis'}
+census %>% 
+  lm(formula = assign_pigment ~ religion) %>% 
+  stargazer(type = "html", out = "Tables/H4_H2.doc")
+```
+
+### H4.3: Country of Origin and Religion 
+
+```{r lm pigment ~ treatment, results = 'asis'}
+census %>% 
+  lm(formula = assign_pigment ~ treatment) %>% 
+  stargazer(type = "html", out = "Tables/H4_H3.doc")
+```
