@@ -14,22 +14,20 @@ knitr::opts_chunk$set(warning = F)
 
 ## Load Libraries
 
-```{r}
+```{r libraries}
 #load libraries 
-library(knitr)
-library(stargazer)
 library(tidyverse)
 ```
 
 ## Load Data 
 
-```{r}
+```{r data}
 census <- read_rds("Data/replication_cleaned.rds")
 ```
 
 ## Useful Function 
 
-```{r}
+```{r fun}
 wrapper <- function(x, ...) 
 {
   paste(strwrap(x, ...), collapse = "\n")
@@ -38,7 +36,7 @@ wrapper <- function(x, ...)
 
 # Analyses 
 
-## Who is white?
+## Who is White?
 
 ### H1: Country of Origin
 ```{r assign_white ~ country}
@@ -84,7 +82,7 @@ census %>%
 ```
 
 ### H3: Country of Origin and Religion
-```{r white ~ country + religion}
+```{r white ~ treatment}
 census %>% 
   filter(respondent_race == "White") %>% 
   group_by(country, religion) %>% 
@@ -166,7 +164,7 @@ census %>%
 
 ### H4.3: Country of Origin and Religion 
 
-```{r pigment ~ country + religion}
+```{r pigment ~ treatment}
 census %>% 
   group_by(country, religion) %>% 
   summarize(avg_pigment = mean(assign_pigment, na.rm = T), 
