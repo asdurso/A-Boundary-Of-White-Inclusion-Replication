@@ -14,6 +14,7 @@ knitr::opts_chunk$set(warning = F)
 
 ## Load Libraries
 ```{r load libraries}
+library(effectsize)
 library(tidyverse)
 ```
 
@@ -33,6 +34,8 @@ h1 <- census %>%
   spread(key = country, value = assign_white)
 
 t.test(h1$Russian, h1$Iranian)
+
+cohens_d(h1$Russian, h1$Iranian)
 ```
 
 ### H2: Religion
@@ -41,6 +44,8 @@ h2 <- census %>%
   spread(key = religion, value = assign_white)
 
 t.test(h2$Christian, h2$Muslim)
+
+cohens_d(h2$Christian, h2$Muslim)
 ```
 
 ### H3: Country of Origin and Religion 
@@ -51,30 +56,46 @@ h3 <- census %>%
 ## ss difference
 t.test(h3$`Russian Christian`, h3$`Russian Muslim`)  
 
+cohens_d(h3$`Russian Christian`, h3$`Russian Muslim`)  
+
 ## ss difference
 t.test(h3$`Russian Christian`, h3$`Iranian Christian`) 
+
+cohens_d(h3$`Russian Christian`, h3$`Iranian Christian`) 
 
 ## ss difference
 t.test(h3$`Russian Christian`, h3$`Iranian Muslim`)  
 
+cohens_d(h3$`Russian Christian`, h3$`Iranian Muslim`)  
+
 ## not a ss difference
 t.test(h3$`Russian Muslim`, h3$`Iranian Christian`)  
+
+cohens_d(h3$`Russian Muslim`, h3$`Iranian Christian`)  
 
 ## ss difference
 t.test(h3$`Russian Muslim`, h3$`Iranian Muslim`)
 
+cohens_d(h3$`Russian Muslim`, h3$`Iranian Muslim`)
+
 ## ss difference
 t.test(h3$`Iranian Christian`, h3$`Iranian Muslim`)
+
+cohens_d(h3$`Iranian Christian`, h3$`Iranian Muslim`)
+```
 
 ## Who is Daker?
 
 ### H4.1: Country of Origin
+
 
 ```{r h4_h1}
 h4_h1 <- census %>%  
   spread(key = country, value = assign_pigment)
 
 t.test(h4_h1$Russian, h4_h1$Iranian)
+
+cohens_d(h4_h1$Russian, h4_h1$Iranian)
 ```
 
 ### H4.2: Religion 
@@ -84,6 +105,8 @@ h4_h2 <- census %>%
   spread(key = religion, value = assign_pigment)
 
 t.test(h4_h2$Christian, h4_h2$Muslim)
+
+cohens_d(h4_h2$Christian, h4_h2$Muslim)
 ```
 
 ### H4.3: Country of Origin and Religion
@@ -94,19 +117,25 @@ h4_h3 <- census %>%
 
 ## not a ss difference
 t.test(h4_h3$`Russian Christian`, h4_h3$`Russian Muslim`)  
+cohens_d(h4_h3$`Russian Christian`, h4_h3$`Russian Muslim`)  
 
 ## not a ss difference
 t.test(h4_h3$`Russian Christian`, h4_h3$`Iranian Christian`) 
+cohens_d(h4_h3$`Russian Christian`, h4_h3$`Iranian Christian`) 
 
 ## ss difference
 t.test(h4_h3$`Russian Christian`, h4_h3$`Iranian Muslim`)  
+cohens_d(h4_h3$`Russian Christian`, h4_h3$`Iranian Muslim`)  
 
 ## not a ss difference
 t.test(h4_h3$`Russian Muslim`, h4_h3$`Iranian Christian`)  
+cohens_d(h4_h3$`Russian Muslim`, h4_h3$`Iranian Christian`)  
 
 ## ss difference
 t.test(h4_h3$`Russian Muslim`, h4_h3$`Iranian Muslim`)
+cohens_d(h4_h3$`Russian Muslim`, h4_h3$`Iranian Muslim`)
 
 ## ss difference
 t.test(h4_h3$`Iranian Christian`, h4_h3$`Iranian Muslim`)
+cohens_d(h4_h3$`Iranian Christian`, h4_h3$`Iranian Muslim`)
 ```
