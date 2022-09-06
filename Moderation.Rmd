@@ -1,0 +1,113 @@
+---
+title: "Moderation"
+author: "AS d'Urso"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+knitr::opts_chunk$set(message = F)
+knitr::opts_chunk$set(warning = F)
+```
+
+```{r}
+#load libraries 
+library(knitr)
+library(stargazer)
+library(viridis)
+library(tidyverse)
+```
+
+```{r}
+#load data 
+census <- read_rds("Data/replication_cleaned.rds")
+
+wrapper <- function(x, ...) 
+{
+  paste(strwrap(x, ...), collapse = "\n")
+}
+```
+
+### Moderation 
+<br>
+
+#### Party
+<br><br>
+<b> Continuous </b>
+<br><br>
+
+```{r reg pid7 continuous, results = 'asis'}
+census %>% 
+  mutate(pid = gsub("Leaning Democratic", "Leaning Democrat", Q71) %>% as.factor() %>% factor(levels = c("Strong Democrat", "Weak Democrat", "Leaning Democrat", "Independent", "Leaning Republican", "Weak Republican", "Strong Republican")) %>% as.numeric() %>% weights::nalevs()) %>%
+  filter(respondent_race == "White" ) %>% 
+  lm(formula = assign_white ~ treatment*pid) %>% 
+  stargazer(type = "html", dep.var.labels = "<center>White Assignment</center>", covariate.labels = c("Russian Muslim", "Iranian Christian", "Iranian Muslim", "Party ID (Republicanness)", "Russian Muslim * Party ID", "Iranian Christian * Party ID", "Iranian Muslim * Party ID", "Constant"), no.space = T, single.row = T, omit.table.layout = "#loa", keep.stat = c("n", "adj.rsq", "f"), out = "Tables/Appendix/pid7_continuous.doc")
+```
+<br><br>
+<b> PID 7 </b>
+<br><br>
+```{r reg pid7, results = 'asis'}
+census %>% 
+  mutate(pid = gsub("Leaning Democratic", "Leaning Democrat", Q71) %>% as.factor() %>% factor(levels = c("Strong Democrat", "Weak Democrat", "Leaning Democrat", "Independent", "Leaning Republican", "Weak Republican", "Strong Republican"))) %>%
+  lm(formula = assign_white ~ treatment*pid) %>% 
+  stargazer(type = "html", out = "Tables/Appendix/pid7.doc")
+```
+
+<br><br>
+<b>PID 3</b>
+<br><br>
+
+```{r results='asis'}
+census %>% 
+  mutate(PID = gsub("Leaning Democratic", "Leaning Democrat", Q71) %>% as.factor() %>% factor(levels = c("Strong Democrat", "Weak Democrat", "Leaning Democrat", "Independent", "Leaning Republican", "Weak Republican", "Strong Republican")), 
+         pid3 = case_when(PID == "Leaning Democrat" | PID == "Weak Democrat" | PID == "Strong Democrat" ~ "Democrat", 
+                          PID == "Leading Republican" | PID == "Weak Republican" | PID == "Strong Republican" ~ "Republican", 
+         T ~ "Independent")) %>% 
+  lm(formula = assign_white ~ treatment*pid3) %>% 
+  stargazer(type = "html", out = "Tables/Appendix/pid3.doc")
+```
+<br><br> 
+
+#### Edcuation
+
+<br><br>
+<b>Continuous </b>
+<br><br>
+```{r education continuous, results = 'asis'}
+census %>% 
+   mutate(education = Q70 %>% factor(levels = c("Less than high school", "High school", "Some college", "College degree", "Post graduate degree")) %>% as.numeric()) %>%  
+  lm(formula = assign_white ~ treatment*education) %>%
+  stargazer(type = "html", dep.var.labels = "<center>White Assignment</center>", covariate.labels = c("Russian Muslim", "Iranian Christian", "Iranian Muslim", "Education", "Russian Muslim * Education", "Iranian Christian * Education", "Iranian Muslim * Education", "Constant"), no.space = T, single.row = T, omit.table.layout = "#loa", keep.stat = c("n", "adj.rsq", "f"), out = "Tables/Appendix/education_continuous.doc")
+```
+
+<br><br>
+<b>Factor</b>
+<br><br>
+
+```{r results = 'asis'}
+census %>% 
+   mutate(education = Q70 %>% factor(levels = c("Less than high school", "High school", "Some college", "College degree", "Post graduate degree"))) %>%  
+  filter(respondent_race == "White") %>% 
+  lm(formula = assign_white ~ treatment*education) %>%
+  stargazer(type = "html", out = "Tables/Appendix/education.doc")
+```
+<br><br>
+
+#### Age
+
+```{r results = 'asis'}
+census %>% 
+  lm(formula = assign_white ~ treatment*age_cat) %>%
+  stargazer(type = "html", dep.var.labels = "<center>White Assignment</center>", covariate.labels = c("Russian Muslim", "Iranian Christian", "Iranian Muslim", "Age 30-44", "Age 45-64", "Age 65 or older", "Russian Muslim * Age 30-44", "Iranian Christian * Age 30-44", "Iranian Muslim * Age 30-44", "Russian Muslim * Age 45-64", "Iranian Christian * Age 45-64", "Iranian Muslim * Age Age 45-64", "Russian Muslim * Age 65 or older", "Iranian Christian * Age 65 or older", "Iranian Muslim *Age 65 or older", "Constant"), no.space = T, single.row = T, omit.table.layout = "#loa", keep.stat = c("n", "adj.rsq", "f"), out = "Tables/Appendix/age.doc")
+```
+<br><br>
+
+#### Income 
+
+```{r income, results = 'asis'}
+census %>% 
+  mutate(income = income %>% factor(levels = c("Below $50,000", "$50,000 or higher"))) %>% 
+  lm(formula = assign_white ~ treatment*income) %>%
+  stargazer(type = "html", dep.var.labels = "<center>White Assignment</center>", covariate.labels = c("Russian Muslim", "Iranian Christian", "Iranian Muslim", "$50,000 or Higher", "Russian Muslim * $50,000 or Higher", "Iranian Christian * $50,000 or Higher", "Iranian Muslim * $50,000 or Higher", "Constant"), no.space = T, single.row = T, omit.table.layout = "#loa", keep.stat = c("n", "adj.rsq", "f"), out = "Tables/Appendix/income.doc")
+```
+
