@@ -55,8 +55,7 @@ census %>%
   xlab("Country of Origin") +
   ylab("Percent Assigned White") +
   labs(caption = "95% confidence intervals \n White respondents") +
-  ggtitle(label = wrapper("The Effect of Country of Origin on White Assignment", width = 80)) +
-  ggsave("Figures/H1.png") 
+  ggtitle(label = wrapper("The Effect of Country of Origin on White Assignment", width = 80)) 
 ```
 
 
@@ -77,8 +76,7 @@ census %>%
   xlab("Religion") +
   ylab("Percent Assigned White") +
   labs(caption = "95% confidence intervals \n White respondents") +
-  ggtitle(label = wrapper("The Effect of Religion on White Assignment", width = 80)) +
-  ggsave(filename = "Figures/H2.png")
+  ggtitle(label = wrapper("The Effect of Religion on White Assignment", width = 80))
 ```
 
 ### H3: Country of Origin and Religion
@@ -111,8 +109,7 @@ census %>%
   xlab("Country of Origin") +
   ylab("Percent Assigned White") +
   labs(caption = "95% confidence intervals \n White respondents") +
-  ggtitle(label = wrapper("The Interaction of Country of Origin and Religion on White Assignment", width = 70)) +
-  ggsave("Figures/H3.png")
+  ggtitle(label = wrapper("The Interaction of Country of Origin and Religion on White Assignment", width = 70))
 ```
 
 ## Who is Darker?
@@ -134,8 +131,7 @@ census %>%
   ggtitle(label = wrapper("The Effect of Country of Origin on Percieved Skin Pigmentation", width = 70)) +
   ylab("Skin Pigmentation \n (Higher Values = Darker)") +
   xlab("Country of Origin") +
-  labs(caption = "95% confidence intervals \n White respondents") +
-  ggsave("Figures/H4_H1.png")
+  labs(caption = "95% confidence intervals \n White respondents")
 
 ```
 
@@ -157,8 +153,7 @@ census %>%
   ggtitle(label = wrapper("The Effect of Religion on Percieved Skin Pigmentation", width = 70)) +
   ylab("Skin Pigmentation \n (Higher Values = Darker)") +
   xlab("Religion") +
-  labs(caption = "95% confidence intervals \n White respondents") +
-  ggsave("Figures/H4_H2.png")
+  labs(caption = "95% confidence intervals \n White respondents")
 
 ```
 
@@ -195,7 +190,6 @@ census %>%
   theme(legend.justification = c(1, 0),
     legend.position = c(1, 0)) +
   ylab("Skin Pigmentation \n (Higher Values = Darker)") +
-  ggtitle(label = wrapper("The Effect of Country of Origin and Religion on Percieved Skin Pigmentation", width = 70)) +
-  ggsave("Figures/H4_H3.png")
+  ggtitle(label = wrapper("The Effect of Country of Origin and Religion on Percieved Skin Pigmentation", width = 70)) 
 
 ```
