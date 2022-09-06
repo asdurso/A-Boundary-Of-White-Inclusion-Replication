@@ -1,5 +1,5 @@
-# How-Religion-Shapes-Perceptions-of-Ethnoracial-Assignment
-Replication Files for How Religion Shapes Perceptions of Ethnoracial Assignment
+# A Boundary of White Inclusion: How-Religion-Shapes-Perceptions-of-Ethnoracial-Assignment
+Replication Files for A Boundary of White Inclusion: How Religion Shapes Perceptions of Ethnoracial Assignment
 ## About 
 This repository provides all of the code used to create the quantitative analyses in the paper. 
 ## Data
