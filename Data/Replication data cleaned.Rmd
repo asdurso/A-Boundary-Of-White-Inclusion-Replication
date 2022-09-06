@@ -1,7 +1,6 @@
 ---
 title: "Replication Data Cleaned"
 author: "AS d'Urso"
-date: "1/30/2021"
 output: html_document
 ---
 
